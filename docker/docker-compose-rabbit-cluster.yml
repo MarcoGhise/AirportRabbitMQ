@@ -1,0 +1,42 @@
+# docker run -d --rm --net rabbits -v ${PWD}/rabbit-1/:/config/ -e RABBITMQ_CONFIG_FILE=/config/rabbitmq -e RABBITMQ_ERLANG_COOKIE=ETOBVBEFXUPGETFECHSQ --hostname rabbit-1 --name rabbit-1 -p 8091:15672 -p 5672:5672 rabbitmq:3-management
+# docker run -d --rm --net rabbits -v ${PWD}/rabbit-2/:/config/ -e RABBITMQ_CONFIG_FILE=/config/rabbitmq -e RABBITMQ_ERLANG_COOKIE=ETOBVBEFXUPGETFECHSQ --hostname rabbit-2 --name rabbit-2 -p 8092:15672 -p 5673:5672 rabbitmq:3-management
+# docker exec rabbit-1 rabbitmqctl set_policy ha "." '{"ha-mode":"all"}' --apply-to queues
+
+# docker build -f Dockerfile -t 468025485777.dkr.ecr.eu-west-1.amazonaws.com/areaclienti:rabbitmq-3-management-alpine .
+# /usr/local/aws-cli/v2/current/bin/aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 468025485777.dkr.ecr.eu-west-1.amazonaws.com
+# docker push 468025485777.dkr.ecr.eu-west-1.amazonaws.com/areaclienti:rabbitmq-3-management-alpine
+
+version: "3.3"
+services:
+  rabbitmq-node1:
+    hostname: rabbit-1
+    container_name: docker-rabbitmq-server-1
+    #image: 468025485777.dkr.ecr.eu-west-1.amazonaws.com/areaclienti:rabbitmq-3-management-alpine
+    image: rabbit-quorum:latest
+    ports:
+      - 15672:15672
+      - 5672:5672
+    environment:
+      RABBITMQ_CONFIG_FILE: /config/rabbitmq
+      RABBITMQ_ERLANG_COOKIE: ETOBVBEFXUPGETFECHSQ
+      
+  rabbitmq-node2:
+    hostname: rabbit-2
+    container_name: docker-rabbitmq-server-2
+    image: rabbit-quorum:latest
+    ports:
+      - 15673:15672
+      - 5673:5672
+    environment:
+      RABBITMQ_CONFIG_FILE: /config/rabbitmq
+      RABBITMQ_ERLANG_COOKIE: ETOBVBEFXUPGETFECHSQ         
+  rabbitmq-node3:
+    hostname: rabbit-3
+    container_name: docker-rabbitmq-server-3
+    image: rabbit-quorum:latest
+    ports:
+      - 15674:15672
+      - 5674:5672
+    environment:
+      RABBITMQ_CONFIG_FILE: /config/rabbitmq
+      RABBITMQ_ERLANG_COOKIE: ETOBVBEFXUPGETFECHSQ        

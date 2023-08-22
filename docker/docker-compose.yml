@@ -1,0 +1,30 @@
+version: '2'
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: 'rabbitmq'
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "15692:15692"
+    environment:
+      - RABBITMQ_DEFAULT_USER=areaclienti
+      - RABBITMQ_DEFAULT_PASS=58!3nQGD      
+  prometheus:
+    image: prom/prometheus:v2.7.2
+    container_name: 'prometheus'
+    ports:
+      - 9090:9090/tcp
+    volumes:
+      - ./mount/prometheus:/etc/prometheus
+    depends_on:
+      - rabbitmq      
+  grafana:
+    image: grafana/grafana:latest
+    container_name: 'grafana8'
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./mount/grafana/:/etc/grafana/  
+    depends_on:
+      - prometheus  
