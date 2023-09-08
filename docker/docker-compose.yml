@@ -6,10 +6,7 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
-      - "15692:15692"
-    environment:
-      - RABBITMQ_DEFAULT_USER=areaclienti
-      - RABBITMQ_DEFAULT_PASS=58!3nQGD      
+      - "15692:15692"    
   prometheus:
     image: prom/prometheus:v2.7.2
     container_name: 'prometheus'
